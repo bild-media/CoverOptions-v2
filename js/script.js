@@ -133,7 +133,6 @@ $(function( $ ) {
     function get_topic(m){
       $("#resultado_temas_"+m).html("");
       let theme_search = $("#tema_"+m).val();
-      console.log(theme_search);
       $.ajax({
         url: opc_vars.ajaxurl,
         type: "POST",
@@ -165,7 +164,7 @@ $(function( $ ) {
          });
        })
        .fail(function( jqXHR, textStatus, errorThrown ) {
-         console.log( "La solicitud a fallado: " +  textStatus +" - "  +errorThrown);
+         console.error( "La solicitud a fallado: " +  textStatus +" - "  +errorThrown);
        });
      }
 
@@ -199,7 +198,6 @@ $(function( $ ) {
             $("#res_nmn_"+m).html('<div class="imgload">Buscando resultados ...</div>');
           },
           success: function(result){
-            console.log(result);
             let obj = JSON.parse(result);
             let size = obj.length;
             let idSelectable = "selectable_mn"+m;
@@ -222,7 +220,7 @@ $(function( $ ) {
             });
           },
           fail: function( jqXHR, textStatus, errorThrown ) {
-            console.log( "La solicitud de nota principal ha fallado: " +  textStatus +" - "  +errorThrown);
+            console.error( "La solicitud de nota principal ha fallado: " +  textStatus +" - "  +errorThrown);
           }
         })
       }
@@ -251,7 +249,6 @@ $(function( $ ) {
       let k = item.substr(4);
       let that = this, value = $(this).val();
       if(value.length > 0 ) {
-        console.log("No busques nada");
       }else {
         get_posts(k);
         return false;
@@ -271,7 +268,6 @@ $(function( $ ) {
     /* Busqueda notas secundarias */
     $(document).on("keyup",  "input[name='name_notes']" ,function(e){
       let item = $(this).attr('id');
-      // console.log("este es el id" +  item);
       let tema = item.substr(5);
       let elem = item.substr(3 , 1) ;
       let that = this, value = $(this).val();
@@ -293,7 +289,6 @@ $(function( $ ) {
       let elem = item.substr(3 , 1) ;
       let that = this, value = $(this).val();
       if(value.length > 0 ) {
-        console.log("No busques nada");
       }else {
         get_notes(tema, elem);
         return false;
@@ -387,7 +382,6 @@ $(function( $ ) {
             if(name_note  == ""){
                 id_note = $(this).val("");
             }else{
-               // console.log("  id nota " +idElemt );
                 let n_note = name_note;
                 let active =  $(`#ckact_${item}_${theme}`).is(':checked');
                 let thumb =   $(`#thum_${item}_${theme}`).is(':checked');
@@ -400,8 +394,6 @@ $(function( $ ) {
                 arrayNotes.push(notes);
             }
         });
-        console.log(`Saved theme : ${temahome}`);
-        console.log(myTheme);
         myTheme.notes =  arrayNotes;
             $.ajax({
                 url: opc_vars.ajaxurl,
@@ -417,7 +409,7 @@ $(function( $ ) {
                 location.reload();
             })
             .fail(function( jqXHR, textStatus, errorThrown ) {
-                 console.log( "La solicitud a fallado: " +  textStatus +" - "  +errorThrown);
+                 console.error( "La solicitud a fallado: " +  textStatus +" - "  +errorThrown);
              });
     }
 
@@ -430,7 +422,6 @@ $(function( $ ) {
                 action : 'get_themes'
             } ,
             success : function( result ) {
-                //  console.log( `: ${obj}`);
               if(result != "" ) {
                   let obj = JSON.parse(result);
                   let size = obj.length;
@@ -457,7 +448,6 @@ $(function( $ ) {
                       $(`#tema_${k}`).val(taxonomyname);
                       $(`#option_name_${k}`).val(option_name);
                       $(`#order_${k}`).val(order);
-                      //console.log( `${name} : main_note ${mainnoteid} : taxonomyid  ${taxonomyid} :  taxonomyname ${taxonomyname}`);
                       if( arry_notes !== undefined){
                           let tn = arry_notes.length;
                           let a = 1;
@@ -477,18 +467,17 @@ $(function( $ ) {
                           a++;
                           }
                       }
-                     // console.log(` ........... ${k} ........  `);
                   }
                 }
               }else{
-                  console.log("No hay themas guardados");
+                  console.error("No hay temas guardados");
                   let fmdefault = form_default();
                   $("div#tabs-1").append(fmdefault);
                   nametema();
               }
               },
               fail : function( jqXHR, textStatus, errorThrown ) {
-                   console.log( "La solicitud de obtener get_themes_home ha fallado: " +  textStatus +" - "  +errorThrown);
+                   console.error( "La solicitud de obtener get_themes_home ha fallado: " +  textStatus +" - "  +errorThrown);
                }
         });
         await btn_generales_tab1();
@@ -499,7 +488,6 @@ $(function( $ ) {
         let theme = $(this).attr('id');
         theme = theme.substr(-1);
         delete_theme = $(`#option_name_${theme}`).val();
-        console.log(`delete theme : ${delete_theme}`);
         let conf = confirm(`¿Está seguro de eliminar el tema  ${theme}?`);
         if(conf){
                 console.log("Eliminando.....");
@@ -517,7 +505,7 @@ $(function( $ ) {
                     location.reload();
                 })
                 .fail(function( jqXHR, textStatus, errorThrown ) {
-                     console.log( "La solicitud de eliminar tema ha fallado: " +  textStatus +" - "  +errorThrown);
+                     console.error( "La solicitud de eliminar tema ha fallado: " +  textStatus +" - "  +errorThrown);
                  });
         }
     });
@@ -527,7 +515,6 @@ $(function( $ ) {
         theme = theme.substr(-1);
         let valor = parseInt($(this).val());
         if(valor> 0 && valor <  n) {
-            console.log(theme +" "+valor);
         }else{
             alert("Solo se permiten valores del 1 al " +(n-1));
             $(this).val(theme);
@@ -535,7 +522,6 @@ $(function( $ ) {
             return false;
         }
     });
-
 
     $(document).on("click","#change_order_theme",function(e){
         let valores = [];
@@ -572,10 +558,9 @@ $(function( $ ) {
                 })
                 .success(function( result ) {
                   location.reload();
-                 // console.log(result);
                 })
                 .fail(function( jqXHR, textStatus, errorThrown ) {
-                    console.log( "La solicitud de eliminar tema ha fallado: " +  textStatus +" - "  +errorThrown);
+                    console.error( "La solicitud de eliminar tema ha fallado: " +  textStatus +" - "  +errorThrown);
                 });
           }
     });
@@ -595,7 +580,6 @@ $(function( $ ) {
 
           i++;
         });
-        console.log(arrayTheme);
         $.ajax({
             url: opc_vars.ajaxurl,
             type: "POST",
@@ -606,10 +590,10 @@ $(function( $ ) {
             }
         })
         .success(function( result ) {
-         console.log(result);
+          //console.log(result);
         })
         .fail(function( jqXHR, textStatus, errorThrown ) {
-            console.log( "La solicitud de eliminar tema ha fallado: " +  textStatus +" - "  +errorThrown);
+            console.error( "La solicitud de eliminar tema ha fallado: " +  textStatus +" - "  +errorThrown);
         });
     }
 
@@ -621,142 +605,142 @@ $(function( $ ) {
 
     let mediaUploader;
     $('#upload-button').click(function(e) {
-		e.preventDefault();
-	  // If the uploader object has already been created, reopen the dialog
-		if (mediaUploader) {
-			mediaUploader.open();
-			return;
-		}
-	  // Extend the wp.media object
-	  mediaUploader = wp.media.frames.file_frame = wp.media({
-				title: 'Selecciona una imagen',
-				button: {
-				text: 'Selecciona una imagen'
-			}, multiple: false });
-	  // When a file is selected, grab the URL and set it as the text field's value
-	  mediaUploader.on('select', function() {
-			attachment = mediaUploader.state().get('selection').first().toJSON();
-			$('#image-url').val(attachment.url);
-		});
-
-	  // Open the uploader dialog
-	  mediaUploader.open();
-	});
-
-  $("#save_transmision_vivo").click(function (){
-    let transmision = new Object();
-    let title_trans   = $("#title_trans_vivo").val();
-    let imagen_trans = $("#image-url").val();
-    let active_trans = $('#active_transmision').is(':checked');
-    let channel = $()
-    transmision.title =  title_trans;
-    transmision.image =  imagen_trans;
-    transmision.active = active_trans;
-    $.ajax({
-      url: opc_vars.ajaxurl,
-      type : "POST",
-      data : {
-        action : 'save_trans_vivo',
-        datos :transmision
-      },
-      success : function (res){
-        location.reload();
+      e.preventDefault();
+      if (mediaUploader) {
+        mediaUploader.open();
+        return;
       }
-    })
-  });
+      mediaUploader = wp.media.frames.file_frame = wp.media({
+        title: 'Selecciona una imagen',
+        button: {
+          text: 'Selecciona una imagen'
+        },
+        multiple: false
+      });
+      mediaUploader.on('select', function() {
+        attachment = mediaUploader.state().get('selection').first().toJSON();
+        $('#image-url').val(attachment.url);
+      });
+      mediaUploader.open();
+    });
 
-/***** Obtiene los datos de transmison en vivo  */
+    let transmision = new Object();
+    $.each($("input[name=channel]"), function(i, v){
+      $(v).on('click', function(){
+        transmision.channel = $(v).val();
+      })
+    });
+
+    $("#save_transmision_vivo").click(function(){
+      let title_trans = $("#title_trans_vivo").val();
+      let imagen_trans = $("#image-url").val();
+      let active_trans = $('#active_transmision').is(':checked');
+      let channel = $("input[name=channel]").val();
+      transmision.title = title_trans;
+      transmision.image = imagen_trans;
+      transmision.active = active_trans;
+      $.ajax({
+        url: opc_vars.ajaxurl,
+        type : "POST",
+        data : {
+          action : 'save_trans_vivo',
+          datos :transmision
+        },
+        success : function (res){
+          location.reload();
+        }
+      });
+    });
+
+    /***** Obtiene los datos de transmison en vivo  */
     function get_feed_trasmision_vivo(){
-        $.ajax({
-            url: opc_vars.ajaxurl,
-            type : "POST",
-            data : {
-                action : 'get_trans_vivo',
-
-            },
-            success : function (res){
-                //console.log(res);
-                if(res != ""){
-                    let obj = JSON.parse(res);
-                    $("#title_trans_vivo").val(obj["title"]);
-                    $("#image-url").val(obj["image"]);
-                    $("#active_transmision").prop('checked', JSON.parse(obj["active"]));
-                   // console.log( );
-
-                }
-            }
-        })
+      $.ajax({
+        url: opc_vars.ajaxurl,
+        type : "POST",
+        data : {
+        action : 'get_trans_vivo',
+        },
+        success : function (res){
+          if(res != ""){
+            let obj = JSON.parse(res);
+            $("#title_trans_vivo").val(obj["title"]);
+            $("#image-url").val(obj["image"]);
+            $("#active_transmision").prop('checked', JSON.parse(obj["active"]));
+            $.each($("input[name=channel]"), function(i, v){
+              if($(v).val() == obj["channel"]){
+                $(v).prop("checked", "true");
+              }
+            });
+          }
+        }
+      });
     }
-/*** Obtiene datos de seleccion del editor */
+
+    /*** Obtiene datos de seleccion del editor */
     function get_feed_update_edit(){
+      $.ajax({
+        url: opc_vars.ajaxurl,
+        type : "POST",
+        data : {
+          action : 'get_update_edit'
+        },
+        success : function(res){
+          if(res != ""){
+            let obj = JSON.parse(res);
+            $("#summary_edit").val(obj["summary"]);
+            $("#active_edit_update").prop('checked', JSON.parse(obj["active"]));
+            if(obj.notes  !== undefined){
+              let nota = obj.notes;
+              let tl =   Object.keys(nota).length;
+              for (let i = 0; i< tl; i++){
+                let name = nota[i]["note_name"];
+                let id = nota[i]["note_id"];
+                $(`#name_note_edit_${i}`).val(name);
+                $(`#id_note_edit_${i}`).val(id);
+              }
+            }
+          }
+        }
+      });
+    }
+
+    /*********  Guarda Selección del editor **********************/
+    $("#save_update_edit").click(function (){
+      let updateEditorial = new Object();
+      let summary = $("#summary_edit").val();
+      let active_update_editorial = $('#active_edit_update').is(':checked');
+      let arrayNotes = [];
+      $(`input[name='note_edit_update']`).each(function() {
+          let notes = new Object();
+          let idElemt = $(this).attr('id');
+          let id = idElemt.substr(-1);
+          let  name_note =$(`#name_note_edit_${id}`).val();
+          if(name_note  == ""){
+              $(`#${idElemt}`).val("");
+          }else{
+              let n_note = name_note;
+              let id_note =  $(`#id_note_edit_${id}`).val();
+              notes.note_id = id_note;
+              notes.note_name = n_note;
+              arrayNotes.push(notes);
+          }
+
+      });
+        updateEditorial.summary = summary;
+        updateEditorial.notes = arrayNotes;
+        updateEditorial.active = active_update_editorial;
         $.ajax({
-            url: opc_vars.ajaxurl,
+            url :  opc_vars.ajaxurl,
             type : "POST",
-            data : {
-                action : 'get_update_edit'
+            data :{
+              action : 'save_update_edit',
+              datos : updateEditorial
             },
             success : function(res){
-                if(res != ""){
-                    let obj = JSON.parse(res);
-                    $("#summary_edit").val(obj["summary"]);
-                    $("#active_edit_update").prop('checked', JSON.parse(obj["active"]));
-                        if(obj.notes  !== undefined){
-                         let nota = obj.notes;
-                          let tl =   Object.keys(nota).length;
-                           for (let i = 0; i< tl; i++){
-                               let name = nota[i]["note_name"];
-                               let id = nota[i]["note_id"];
-                            $(`#name_note_edit_${i}`).val(name);
-                            $(`#id_note_edit_${i}`).val(id);
-
-                           }
-                        }
-                 }
+              location.reload();
             }
         })
-    }
-
-/*********  Guarda Selección del editor **********************/
-  $("#save_update_edit").click(function (){
-
-    let updateEditorial = new Object();
-    let summary = $("#summary_edit").val();
-    let active_update_editorial = $('#active_edit_update').is(':checked');
-    let arrayNotes = [];
-    $(`input[name='note_edit_update']`).each(function() {
-        let notes = new Object();
-        let idElemt = $(this).attr('id');
-        let id = idElemt.substr(-1);
-        let  name_note =$(`#name_note_edit_${id}`).val();
-        if(name_note  == ""){
-            $(`#${idElemt}`).val("");
-        }else{
-            let n_note = name_note;
-            let id_note =  $(`#id_note_edit_${id}`).val();
-            notes.note_id = id_note;
-            notes.note_name = n_note;
-            arrayNotes.push(notes);
-        }
-
     });
-      updateEditorial.summary = summary;
-      updateEditorial.notes = arrayNotes;
-      updateEditorial.active = active_update_editorial;
-      $.ajax({
-          url :  opc_vars.ajaxurl,
-          type : "POST",
-          data :{
-            action : 'save_update_edit',
-            datos : updateEditorial
-          },
-          success : function(res){
-                    //console.log(res);
-                    location.reload();
-          }
-      })
-  });
-
-
 
     function get_post_for_editorial(elem){
       let item = `res_note_edit_${elem}`;
@@ -775,12 +759,9 @@ $(function( $ ) {
                 $(`#${item}`).html('<div class="imgload">Buscando resultados ...</div>');
             },
             success : function( result ) {
-                // console.log(result);
                   let obj = JSON.parse(result);
-                 // console.log(obj);
                    let size = obj.length;
                    let idSelectable = `select_editorial_${elem}`;
-
                    let opc = `<ol class="selector" id="${idSelectable}">`
                    for(let i =0 ;  i<size ; i++){
                        let id =  obj[i]["id"];
@@ -788,9 +769,7 @@ $(function( $ ) {
                        opc+= `<li id="${id}">${title}</li>`
                    }
                    opc+= `</ol>` ;
-
                    $(`#${item}`).html(opc);
-
                    $(`#${idSelectable}`).selectable({
                        selected: function(event, ui) {
                           let selected_id = $(ui.selected).attr('id');
@@ -802,7 +781,7 @@ $(function( $ ) {
                    });
                } ,
             fail : function( jqXHR, textStatus, errorThrown ) {
-                console.log( "La solicitud de nota principal ha fallado: " +  textStatus +" - "  +errorThrown);
+                console.error( "La solicitud de nota principal ha fallado: " +  textStatus +" - "  +errorThrown);
             }
         })
     }
@@ -816,7 +795,6 @@ $(function( $ ) {
         if(value.length > 0 ) {
             $(`#res_note_edit_${k}`).html("");
             if( code == 13) {
-                console.log("KEYUP");
                 get_post_for_editorial(k);
                 return false;
               }
@@ -828,15 +806,12 @@ $(function( $ ) {
     $(document).on("focus",  "input[name='note_edit_update']" ,function(e){
         let item = $(this).attr('id');
         let k = item.substr(-1);
-        console.log(k)
         let that = this, value = $(this).val();
         if(value.length > 0 ) {
-            console.log("No busques nada");
         }else {
-             get_post_for_editorial(k);
+          get_post_for_editorial(k);
         }
-
-        });
+      });
 
     $(document).on("focusout",  "input[name='note_edit_update']" ,function(e){
         let item = $(this).attr('id');

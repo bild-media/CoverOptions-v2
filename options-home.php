@@ -295,10 +295,8 @@ function save_main_theme(){
 
 function save_transmision_vivo(){
 	$datos = $_POST["datos"];
-	var_dump($datos);
-	wp_die();
 	$update = update_option("home_live_broadcast", $datos, "no");
-	//echo $update;
+	echo $update;
 	wp_die();
 }
 
