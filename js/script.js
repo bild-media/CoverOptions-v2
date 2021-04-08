@@ -711,79 +711,78 @@ $(function( $ ) {
       let active_update_editorial = $('#active_edit_update').is(':checked');
       let arrayNotes = [];
       $(`input[name='note_edit_update']`).each(function() {
-          let notes = new Object();
-          let idElemt = $(this).attr('id');
-          let id = idElemt.substr(-1);
-          let  name_note =$(`#name_note_edit_${id}`).val();
-          if(name_note  == ""){
-              $(`#${idElemt}`).val("");
-          }else{
-              let n_note = name_note;
-              let id_note =  $(`#id_note_edit_${id}`).val();
-              notes.note_id = id_note;
-              notes.note_name = n_note;
-              arrayNotes.push(notes);
-          }
-
+        let notes = new Object();
+        let idElemt = $(this).attr('id');
+        let id = idElemt.substr(-1);
+        let  name_note =$(`#name_note_edit_${id}`).val();
+        if(name_note  == ""){
+          $(`#${idElemt}`).val("");
+        }else{
+          let n_note = name_note;
+          let id_note =  $(`#id_note_edit_${id}`).val();
+          notes.note_id = id_note;
+          notes.note_name = n_note;
+          arrayNotes.push(notes);
+        }
       });
-        updateEditorial.summary = summary;
-        updateEditorial.notes = arrayNotes;
-        updateEditorial.active = active_update_editorial;
-        $.ajax({
-            url :  opc_vars.ajaxurl,
-            type : "POST",
-            data :{
-              action : 'save_update_edit',
-              datos : updateEditorial
-            },
-            success : function(res){
-              location.reload();
-            }
-        })
+      updateEditorial.summary = summary;
+      updateEditorial.notes = arrayNotes;
+      updateEditorial.active = active_update_editorial;
+      $.ajax({
+        url :  opc_vars.ajaxurl,
+        type : "POST",
+        data :{
+          action : 'save_update_edit',
+          datos : updateEditorial
+        },
+        success : function(res){
+          location.reload();
+        }
+      });
     });
 
     function get_post_for_editorial(elem){
       let item = `res_note_edit_${elem}`;
       $(`#${item}`).html("");
-      let tema_id=0;
+      let tema_id=null;
       let search_title = ($("#name_note_edit_"+elem).val() == "") ? null : $("#name_note_edit_"+elem).val();
-        $.ajax({
-            url: opc_vars.ajaxurl,
-            type: "POST",
-            data: {
-                action: 'get_posts',
-                theme_search: tema_id,
-                title_search: search_title
-            },
-            beforeSend: function(){
-                $(`#${item}`).html('<div class="imgload">Buscando resultados ...</div>');
-            },
-            success : function( result ) {
-                  let obj = JSON.parse(result);
-                   let size = obj.length;
-                   let idSelectable = `select_editorial_${elem}`;
-                   let opc = `<ol class="selector" id="${idSelectable}">`
-                   for(let i =0 ;  i<size ; i++){
-                       let id =  obj[i]["id"];
-                       let title=  obj[i]["post_title"];
-                       opc+= `<li id="${id}">${title}</li>`
-                   }
-                   opc+= `</ol>` ;
-                   $(`#${item}`).html(opc);
-                   $(`#${idSelectable}`).selectable({
-                       selected: function(event, ui) {
-                          let selected_id = $(ui.selected).attr('id');
-                          let selected_name = $(ui.selected).text();
-                          $(`#name_note_edit_${elem}`).val(selected_name);
-                          $(`#id_note_edit_${elem}`).val(selected_id);
-                          $(`#${item}`).html("");
-                       }
-                   });
-               } ,
-            fail : function( jqXHR, textStatus, errorThrown ) {
-                console.error( "La solicitud de nota principal ha fallado: " +  textStatus +" - "  +errorThrown);
+      $.ajax({
+        url: opc_vars.ajaxurl,
+        type: "POST",
+        data: {
+          action: 'get_posts',
+          theme_search: tema_id,
+          title_search: search_title
+        },
+        beforeSend: function(){
+          $(`#${item}`).html('<div class="imgload">Buscando resultados ...</div>');
+        },
+        success : function( result ) {
+          let obj = JSON.parse(result);
+          let size = obj.length;
+          let idSelectable = `select_editorial_${elem}`;
+          let opc = `<ol class="selector" id="${idSelectable}">`
+          for(let i =0 ;  i<size ; i++){
+            let id =  obj[i]["id"];
+            let title=  obj[i]["post_title"];
+            opc+= `<li id="${id}">${title}</li>`;
+          }
+          opc+= `</ol>`;
+          $(`#${item}`).html(opc);
+          $(`#${idSelectable}`).selectable({
+            selected: function(event, ui) {
+              let selected_id = $(ui.selected).attr('id');
+              let selected_name = $(ui.selected).text();
+              $(`#name_note_edit_${elem}`).val(selected_name);
+              $(`#id_note_edit_${elem}`).val(selected_id);
+              $(`#${item}`).html("");
             }
-        })
+          });
+        },
+        fail : function( jqXHR, textStatus, errorThrown ) {
+          console.error( "La solicitud de nota principal ha fallado: " +  textStatus +" - "  +errorThrown);
+        }
+      });
     }
 
     $(document).on("keyup",  "input[name='note_edit_update']" ,function(e){
