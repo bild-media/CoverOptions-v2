@@ -1,10 +1,10 @@
 <?php
 /*
 Plugin Name: Opciones del home
-Plugin URI: http:///plugins/options-home/
-Description: Este plugin permite configurar el contenido del home de este sitio
-Author:Laura Ram&iacute;rez
-Version: 1.0
+Plugin URI: https://github.com/HelaGone/CoverOptions-v2
+Description: Este plugin permite configurar el contenido del home de cualquier tema de wordpress
+Author: Laura Ram&iacute;rez & TLJ
+Version: 2.0
 */
 
 // in the main plugin file
