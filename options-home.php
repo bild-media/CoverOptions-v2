@@ -58,6 +58,7 @@ function create_admin_page(){
 			<div id="tabs-2">
   			<h1>Transmisi&oacute;n en vivo</h1>
 				<form method="post">
+
 					<div class ="opch_txt_block">
 						<div class = "opch_txt_left">T&iacute;tulo : </div>
 						<div> <input  type="text"   id="title_trans_vivo" size = "70" placeholder=" T&iacute;tulo transmisi&oacute;n en vivo" /></div>
@@ -66,6 +67,15 @@ function create_admin_page(){
 						<div class = "opch_txt_left">Imagen : </div>
 						<input id="image-url" size = "55" type="text" name="image" placeholder="Selecciona una imagen" />
 						<input id="upload-button" type="button" class="button" value="Upload Image" />
+					</div>
+					<div class="opch_txt_block" id="live_url_container" hidden>
+						<div class="opch_txt_left">
+							URL en vivo
+						</div>
+						<div>
+							<input id="live-url" type="text" name="live_url" size="70" placeholder="https://www.youtube.com/watch?v=rlDrH4VLeyU"> <br/>
+							<label id="live_url_field" for="live_url"><em>Llenar solo en caso de tratarse de Youtube o Facebook</em></label>
+						</div>
 					</div>
 					<div class = "opch_txt_block">
 						<div class = "opch_txt_left"> Activar  </div>

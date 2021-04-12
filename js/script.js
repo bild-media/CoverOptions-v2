@@ -626,19 +626,32 @@ $(function( $ ) {
 
     let transmision = new Object();
     $.each($("input[name=channel]"), function(i, v){
-      $(v).on('click', function(){
+      $(v).on('click', function(evt){
         transmision.channel = $(v).val();
+        if($(v).val() == "Facebook"||$(v).val() == "Youtube"){
+          $("#live_url_container").show();
+          $("#live-url").show();
+        }else{
+          $("#live_url_container").hide();
+        }
       })
     });
+
+    /*
+    REGEX => \?v=([a-zA-Z0-9\-\_]{1,})\&
+    */
 
     $("#save_transmision_vivo").click(function(){
       let title_trans = $("#title_trans_vivo").val();
       let imagen_trans = $("#image-url").val();
       let active_trans = $('#active_transmision').is(':checked');
+      let live_url = $("#live-url").val();
       let channel = $("input[name=channel]").val();
       transmision.title = title_trans;
       transmision.image = imagen_trans;
       transmision.active = active_trans;
+      transmision.live_url = live_url;
+      console.log(live_url);
       $.ajax({
         url: opc_vars.ajaxurl,
         type : "POST",
@@ -663,12 +676,20 @@ $(function( $ ) {
         success : function (res){
           if(res != ""){
             let obj = JSON.parse(res);
+            console.log(obj["live_url"]);
             $("#title_trans_vivo").val(obj["title"]);
             $("#image-url").val(obj["image"]);
             $("#active_transmision").prop('checked', JSON.parse(obj["active"]));
             $.each($("input[name=channel]"), function(i, v){
               if($(v).val() == obj["channel"]){
                 $(v).prop("checked", "true");
+                if($(v).val() == "Youtube"||$(v).val() == "Facebook"){
+                  $("#live-url").show();
+                  $("#live-url").val(obj["live_url"]);
+                  $("#live_url_container").show();
+                }else{
+                  $("#live-url").hide();
+                }
               }
             });
           }
