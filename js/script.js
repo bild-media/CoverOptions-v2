@@ -168,18 +168,6 @@ $(function( $ ) {
        });
      }
 
-    /* keyup los temas */
-    $(document).on("keyup",  "input[name='tema']" ,function(e){
-      let item = $(this).attr('id');
-      let k = item.substr(5);
-      let minlength =1;
-      let that = this, value = $(this).val();
-      if(value.length >= minlength ) {
-        get_topic(k);
-        return false;
-      }
-    });
-
      /* Obtiene los posts */
     function get_posts(m){
       $("#res_nmn_"+m).html("");
@@ -226,83 +214,6 @@ $(function( $ ) {
       }
     }
 
-    // Busqueda nota princiapl
-    $(document).on("keyup",  "input[name='name_main_note']" ,function(e){
-      let item = $(this).attr('id');
-      let k = item.substr(4);
-      let code = (e.keyCode ? e.keyCode : e.which); // Si hay un enter , busca el string
-      let that = this, value = $(this).val();
-      if(value.length > 0 ) {
-        $("#res_nmn_"+k).html("");
-        if( code == 13) {
-          get_posts(k);
-          return false;
-        }
-      }else if(value.length ==0){
-        get_posts(k);
-      }
-    });
-
-   // Cuando estas en text de nota principal mustra las ultimas 50 notas
-    $(document).on("focus",  "input[name='name_main_note']" ,function(e){
-      let item = $(this).attr('id');
-      let k = item.substr(4);
-      let that = this, value = $(this).val();
-      if(value.length > 0 ) {
-      }else {
-        get_posts(k);
-        return false;
-      }
-    });
-
-    // Borra resultados si sale del text de la nota principal
-    $(document).on("focusout",  "input[name='name_main_note']" ,function(e){
-      let item = $(this).attr('id');
-      let k = item.substr(4);
-      let minlength =3;
-      let that = this, value = $(this).val();
-      $("#res_nmn_"+k).html("");
-      return false;
-    });
-
-    /* Busqueda notas secundarias */
-    $(document).on("keyup",  "input[name='name_notes']" ,function(e){
-      let item = $(this).attr('id');
-      let tema = item.substr(5);
-      let elem = item.substr(3 , 1) ;
-      let that = this, value = $(this).val();
-      let code = (e.keyCode ? e.keyCode : e.which); // Si hay un enter , busca el string
-      if(value.length > 0 ) {
-        $(`#res_nn_${elem}_${tema}`).html("");
-        if(code == 13){
-          get_notes(tema, elem);
-          return false;
-        }
-      }else if(value.length ==0){
-        get_notes(tema, elem);
-      }
-    });
-
-    $(document).on("focus",  "input[name='name_notes']" ,function(e){
-      let item = $(this).attr('id');
-      let tema = item.substr(5);
-      let elem = item.substr(3 , 1) ;
-      let that = this, value = $(this).val();
-      if(value.length > 0 ) {
-      }else {
-        get_notes(tema, elem);
-        return false;
-      }
-    });
-
-    $(document).on("focusout",  "input[name='name_notes']" ,function(e){
-      let item = $(this).attr('id');
-      let tema = item.substr(5);
-      let elem = item.substr(3 , 1) ;
-      let res_notas = `res_nn_${elem}_${tema}`;
-      $(`#${res_notas}`).html("");
-    });
-
     /* OBTIENE LAS NOTAS secundarias*/
     function get_notes(tema, elem){
       let res_notas = `res_nn_${elem}_${tema}`;
@@ -348,22 +259,14 @@ $(function( $ ) {
       })
     }
 
-    $(document).on("click",  "input[name='btn_save_themes']" ,function(e){
-        let item = $(this).attr('id');
-        let tema = item.substr(11);
-        save_themes(tema);
-    });
-
     function save_themes(t){
         let temahome = $(`#option_name_${t}`).val();
-       // let temahome = `home_theme_${t}`;
         let theme_name= $(`#theme_name_${t}`).val();
         let theme_id= $(`#tema_id_${t}`).val();
         let tema_name= $(`#tema_${t}`).val();
         let idmn= $(`#imn_${t}`).val();
         let nmn= $(`#nmn_${t}`).val();
         let theme_orden= $(`#nmn_${t}`).val();
-
         let myTheme = new Object();
         myTheme.name = theme_name;
         myTheme.taxonomy_id = theme_id;
@@ -394,23 +297,23 @@ $(function( $ ) {
                 arrayNotes.push(notes);
             }
         });
-        myTheme.notes =  arrayNotes;
-            $.ajax({
-                url: opc_vars.ajaxurl,
-                type: "POST",
-                data: {
-                    action : 'save_themes',
-                    tema : temahome,
-                    datos : myTheme
-                }
-            })
-            .success(function( result ) {
-                updateMainTheme();
-                location.reload();
-            })
-            .fail(function( jqXHR, textStatus, errorThrown ) {
-                 console.error( "La solicitud a fallado: " +  textStatus +" - "  +errorThrown);
-             });
+        myTheme.notes = arrayNotes;
+        $.ajax({
+            url: opc_vars.ajaxurl,
+            type: "POST",
+            data: {
+                action : 'save_themes',
+                tema : temahome,
+                datos : myTheme
+            }
+        })
+        .success(function( result ) {
+          updateMainTheme();
+          location.reload();
+        })
+        .fail(function( jqXHR, textStatus, errorThrown ) {
+             console.error( "La solicitud a fallado: " +  textStatus +" - "  +errorThrown);
+         });
     }
 
     async function get_themes_home(){
@@ -483,6 +386,255 @@ $(function( $ ) {
         await btn_generales_tab1();
 
     }
+
+    function updateMainTheme(){
+      let arrayTheme = [];
+      let i=1;
+      $("input[name='order_themes']").each(function( ind, elem){
+        let theme = new Object();
+        let item = $(elem).val();
+        let id = $(elem).attr('id');
+            id = id.substr(-1);
+        let opc_name_them = $(`#option_name_${id}`).val();
+        theme.order = i;
+        theme.option_name = opc_name_them;
+        arrayTheme.push(theme);
+        i++;
+      });
+      $.ajax({
+        url: opc_vars.ajaxurl,
+        type: "POST",
+        data: {
+          action : 'save_main_theme_home',
+          datos : arrayTheme
+        }
+      }).success(function(result){
+        //console.log(result);
+      }).fail(function( jqXHR, textStatus, errorThrown ) {
+        console.error( "La solicitud de eliminar tema ha fallado: " +  textStatus +" - "  +errorThrown);
+      });
+    }
+
+    function btn_generales_tab1(){
+      let btn_gral  =`
+        <div  class="bt_save_them" id ="bt_save_them_1">
+          <input type ="button" class ="button tagadd" value="Añadir tema" id="add_theme">
+        </div>
+        <div class="bt_orden_them" id ="bt_orden_them_1">
+          <input type ="button" class ="button tagadd" value="Guardar orden de los temas" id="change_order_theme">
+        </div>`;
+      $("div#tabs-1").append(btn_gral);
+    }
+
+    /***** Obtiene los datos de transmison en vivo  */
+    function get_feed_trasmision_vivo(){
+      $.ajax({
+        url: opc_vars.ajaxurl,
+        type : "POST",
+        data : {
+        action : 'get_trans_vivo',
+        },
+        success : function (res){
+          if(res != ""){
+            let obj = JSON.parse(res);
+            $("#title_trans_vivo").val(obj["title"]);
+            $("#image-url").val(obj["image"]);
+            $("#active_transmision").prop('checked', JSON.parse(obj["active"]));
+            $.each($("input[name=channel]"), function(i, v){
+              if($(v).val() == obj["channel"]){
+                $(v).prop("checked", "true");
+                if($(v).val() == "Youtube"||$(v).val() == "Facebook"){
+                  $("#live-url").show();
+                  $("#live-url").val(obj["live_url"]);
+                  $("#live_url_container").show();
+                }else{
+                  $("#live-url").hide();
+                }
+              }
+            });
+          }
+        }
+      });
+    }
+
+    function get_post_for_editorial(elem){
+      let item = `res_note_edit_${elem}`;
+      $(`#${item}`).html("");
+      let tema_id=null;
+      let search_title = ($("#name_note_edit_"+elem).val() == "") ? null : $("#name_note_edit_"+elem).val();
+      $.ajax({
+        url: opc_vars.ajaxurl,
+        type: "POST",
+        data: {
+          action: 'get_posts',
+          theme_search: tema_id,
+          title_search: search_title
+        },
+        beforeSend: function(){
+          $(`#${item}`).html('<div class="imgload">Buscando resultados ...</div>');
+        },
+        success : function( result ) {
+          let obj = JSON.parse(result);
+          let size = obj.length;
+          let idSelectable = `select_editorial_${elem}`;
+          let opc = `<ol class="selector" id="${idSelectable}">`
+          for(let i =0 ;  i<size ; i++){
+            let id =  obj[i]["id"];
+            let title=  obj[i]["post_title"];
+            opc+= `<li id="${id}">${title}</li>`;
+          }
+          opc+= `</ol>`;
+          $(`#${item}`).html(opc);
+          $(`#${idSelectable}`).selectable({
+            selected: function(event, ui) {
+              let selected_id = $(ui.selected).attr('id');
+              let selected_name = $(ui.selected).text();
+              $(`#name_note_edit_${elem}`).val(selected_name);
+              $(`#id_note_edit_${elem}`).val(selected_id);
+              $(`#${item}`).html("");
+            }
+          });
+        },
+        fail : function( jqXHR, textStatus, errorThrown ) {
+          console.error( "La solicitud de nota principal ha fallado: " +  textStatus +" - "  +errorThrown);
+        }
+      });
+    }
+
+    /*** Obtiene datos de seleccion del editor */
+    function get_feed_update_edit(){
+      $.ajax({
+        url: opc_vars.ajaxurl,
+        type : "POST",
+        data : {
+          action : 'get_update_edit'
+        },
+        success : function(res){
+          if(res != ""){
+            let obj = JSON.parse(res);
+            $("#summary_edit").val(obj["summary"]);
+            $("#active_edit_update").prop('checked', JSON.parse(obj["active"]));
+            if(obj.notes  !== undefined){
+              let nota = obj.notes;
+              let tl =   Object.keys(nota).length;
+              for (let i = 0; i< tl; i++){
+                let name = nota[i]["note_name"];
+                let id = nota[i]["note_id"];
+                $(`#name_note_edit_${i}`).val(name);
+                $(`#id_note_edit_${i}`).val(id);
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Búsqueda temas: Busca en keystroke keyup
+    $(document).on("keyup",  "input[name='tema']" ,function(e){
+      let item = $(this).attr('id');
+      let k = item.substr(5);
+      let minlength =1;
+      let that = this
+      let tema_value = $(this).val();
+      if(tema_value.length >= minlength ) {
+        get_topic(k);
+        return false;
+      }
+    });
+
+    $(document).on("focusout", "input[name=tema]", function(e){
+      if($(this).val() == ""){
+        console.log( $(this) );
+        const k = $(this).attr('id').substr(5);
+        $("#tema_id_"+k).val("");
+        console.log($(this).val());
+      }else{
+        console.log( $(this).val() );
+      }
+    });
+
+    // Busqueda nota princiapl
+    $(document).on("keyup",  "input[name='name_main_note']" ,function(e){
+      let item = $(this).attr('id');
+      let k = item.substr(4);
+      let code = (e.keyCode ? e.keyCode : e.which); // Si hay un enter , busca el string
+      let that = this;
+      let main_note_field_value = $(this).val();
+      if(main_note_field_value.length > 3 ) {
+        $("#res_nmn_"+k).html("");
+        // get_posts(k);
+        if( code == 13) {
+          get_posts(k);
+          return false;
+        }
+      }
+    });
+
+   // Cuando estas en text de nota principal mustra las ultimas 50 notas
+    $(document).on("focus",  "input[name='name_main_note']" ,function(e){
+      let item = $(this).attr('id');
+      let k = item.substr(4);
+      let value = $(this).val();
+      if(value.length <= 0 ) {
+        get_posts(k);
+        return false;
+      }
+    });
+
+    // Borra resultados si sale del text de la nota principal
+    $(document).on("focusout",  "input[name='name_main_note']" ,function(e){
+      let item = $(this).attr('id');
+      let k = item.substr(4);
+      let minlength =3;
+      let that = this;
+      let value = $(this).val();
+      $("#res_nmn_"+k).html("");
+      return false;
+    });
+
+    /* Busqueda notas secundarias */
+    $(document).on("keyup",  "input[name='name_notes']" ,function(e){
+      let item = $(this).attr('id');
+      let tema = item.substr(5);
+      let elem = item.substr(3 , 1) ;
+      let that = this, value = $(this).val();
+      let code = (e.keyCode ? e.keyCode : e.which); // Si hay un enter , busca el string
+      if(value.length > 0 ) {
+        $(`#res_nn_${elem}_${tema}`).html("");
+        if(code == 13){
+          get_notes(tema, elem);
+          return false;
+        }
+      }else if(value.length ==0){
+        get_notes(tema, elem);
+      }
+    });
+
+    $(document).on("focus",  "input[name='name_notes']" ,function(e){
+      let item = $(this).attr('id');
+      let tema = item.substr(5);
+      let elem = item.substr(3 , 1) ;
+      let that = this, value = $(this).val();
+      if(value.length > 0 ) {
+      }else {
+        get_notes(tema, elem);
+        return false;
+      }
+    });
+
+    $(document).on("focusout",  "input[name='name_notes']" ,function(e){
+      let item = $(this).attr('id');
+      let tema = item.substr(5);
+      let elem = item.substr(3 , 1) ;
+      let res_notas = `res_nn_${elem}_${tema}`;
+      $(`#${res_notas}`).html("");
+    });
+
+    $(document).on("click",  "input[name='btn_save_themes']" ,function(e){
+        let item = $(this).attr('id');
+        let tema = item.substr(11);
+        save_themes(tema);
+    });
 
     $(document).on("click","input[name=btn_delete_themes]",function(e){
         let theme = $(this).attr('id');
@@ -565,44 +717,6 @@ $(function( $ ) {
           }
     });
 
-    function updateMainTheme(){
-        let arrayTheme = [];
-        let i=1;
-        $("input[name='order_themes']").each(function( ind, elem) {
-            let theme = new Object();
-            let item = $(elem).val();
-            let id = $(elem).attr('id');
-                id = id.substr(-1);
-            let opc_name_them = $(`#option_name_${id}`).val();
-            theme.order = i;
-            theme.option_name = opc_name_them;
-            arrayTheme.push(theme);
-
-          i++;
-        });
-        $.ajax({
-            url: opc_vars.ajaxurl,
-            type: "POST",
-            data: {
-                action : 'save_main_theme_home',
-                datos : arrayTheme
-
-            }
-        })
-        .success(function( result ) {
-          //console.log(result);
-        })
-        .fail(function( jqXHR, textStatus, errorThrown ) {
-            console.error( "La solicitud de eliminar tema ha fallado: " +  textStatus +" - "  +errorThrown);
-        });
-    }
-
-    function btn_generales_tab1(){
-        let btn_gral  =` <div  class="bt_save_them" id ="bt_save_them_1"> <input type ="button" class ="button tagadd" value="Añadir tema" id="add_theme"></div>
-                <div class="bt_orden_them" id ="bt_orden_them_1">	<input type ="button" class ="button tagadd" value="Guardar orden de los temas" id="change_order_theme"></div>`;
-             $("div#tabs-1").append(btn_gral);
-    }
-
     let mediaUploader;
     $('#upload-button').click(function(e) {
       e.preventDefault();
@@ -638,9 +752,8 @@ $(function( $ ) {
     });
 
     /*
-    REGEX => \?v=([a-zA-Z0-9\-\_]{1,})\&
+    REGEX => \?v=([a-zA-Z0-9\-\_]{1,})\
     */
-
     $("#save_transmision_vivo").click(function(){
       let title_trans = $("#title_trans_vivo").val();
       let imagen_trans = $("#image-url").val();
@@ -651,7 +764,6 @@ $(function( $ ) {
       transmision.image = imagen_trans;
       transmision.active = active_trans;
       transmision.live_url = live_url;
-      console.log(live_url);
       $.ajax({
         url: opc_vars.ajaxurl,
         type : "POST",
@@ -664,66 +776,6 @@ $(function( $ ) {
         }
       });
     });
-
-    /***** Obtiene los datos de transmison en vivo  */
-    function get_feed_trasmision_vivo(){
-      $.ajax({
-        url: opc_vars.ajaxurl,
-        type : "POST",
-        data : {
-        action : 'get_trans_vivo',
-        },
-        success : function (res){
-          if(res != ""){
-            let obj = JSON.parse(res);
-            console.log(obj["live_url"]);
-            $("#title_trans_vivo").val(obj["title"]);
-            $("#image-url").val(obj["image"]);
-            $("#active_transmision").prop('checked', JSON.parse(obj["active"]));
-            $.each($("input[name=channel]"), function(i, v){
-              if($(v).val() == obj["channel"]){
-                $(v).prop("checked", "true");
-                if($(v).val() == "Youtube"||$(v).val() == "Facebook"){
-                  $("#live-url").show();
-                  $("#live-url").val(obj["live_url"]);
-                  $("#live_url_container").show();
-                }else{
-                  $("#live-url").hide();
-                }
-              }
-            });
-          }
-        }
-      });
-    }
-
-    /*** Obtiene datos de seleccion del editor */
-    function get_feed_update_edit(){
-      $.ajax({
-        url: opc_vars.ajaxurl,
-        type : "POST",
-        data : {
-          action : 'get_update_edit'
-        },
-        success : function(res){
-          if(res != ""){
-            let obj = JSON.parse(res);
-            $("#summary_edit").val(obj["summary"]);
-            $("#active_edit_update").prop('checked', JSON.parse(obj["active"]));
-            if(obj.notes  !== undefined){
-              let nota = obj.notes;
-              let tl =   Object.keys(nota).length;
-              for (let i = 0; i< tl; i++){
-                let name = nota[i]["note_name"];
-                let id = nota[i]["note_id"];
-                $(`#name_note_edit_${i}`).val(name);
-                $(`#id_note_edit_${i}`).val(id);
-              }
-            }
-          }
-        }
-      });
-    }
 
     /*********  Guarda Selección del editor **********************/
     $("#save_update_edit").click(function (){
@@ -762,52 +814,7 @@ $(function( $ ) {
       });
     });
 
-    function get_post_for_editorial(elem){
-      let item = `res_note_edit_${elem}`;
-      $(`#${item}`).html("");
-      let tema_id=null;
-      let search_title = ($("#name_note_edit_"+elem).val() == "") ? null : $("#name_note_edit_"+elem).val();
-      $.ajax({
-        url: opc_vars.ajaxurl,
-        type: "POST",
-        data: {
-          action: 'get_posts',
-          theme_search: tema_id,
-          title_search: search_title
-        },
-        beforeSend: function(){
-          $(`#${item}`).html('<div class="imgload">Buscando resultados ...</div>');
-        },
-        success : function( result ) {
-          let obj = JSON.parse(result);
-          let size = obj.length;
-          let idSelectable = `select_editorial_${elem}`;
-          let opc = `<ol class="selector" id="${idSelectable}">`
-          for(let i =0 ;  i<size ; i++){
-            let id =  obj[i]["id"];
-            let title=  obj[i]["post_title"];
-            opc+= `<li id="${id}">${title}</li>`;
-          }
-          opc+= `</ol>`;
-          $(`#${item}`).html(opc);
-          $(`#${idSelectable}`).selectable({
-            selected: function(event, ui) {
-              let selected_id = $(ui.selected).attr('id');
-              let selected_name = $(ui.selected).text();
-              $(`#name_note_edit_${elem}`).val(selected_name);
-              $(`#id_note_edit_${elem}`).val(selected_id);
-              $(`#${item}`).html("");
-            }
-          });
-        },
-        fail : function( jqXHR, textStatus, errorThrown ) {
-          console.error( "La solicitud de nota principal ha fallado: " +  textStatus +" - "  +errorThrown);
-        }
-      });
-    }
-
     $(document).on("keyup",  "input[name='note_edit_update']" ,function(e){
-
         let item = $(this).attr('id');
         let k = item.substr(-1);
         let code = (e.keyCode ? e.keyCode : e.which); // Si hay un enter , busca el string
@@ -840,12 +847,11 @@ $(function( $ ) {
         $(`#${res_notas}`).html("");
     });
 
- /**** TAB-1  */
-get_themes_home();
-/*****TAB-2 */
-//
+    /*  TAB-1 */
+    get_themes_home();
+    /*  TAB-2 */
 
-let tabss = $( "#ophome-tabs" ).tabs({
+  let tabss = $( "#ophome-tabs" ).tabs({
     active: 0,
   });
 

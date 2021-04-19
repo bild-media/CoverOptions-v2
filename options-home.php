@@ -193,11 +193,11 @@ function get_taxonomy_tema(){
 function get_posts_by_tema(){
 	global  $wpdb;
 	$arr = array();
-	$filter =[];
-	if(isset ($_POST["theme_search"]) && $_POST["theme_search"] != null){
+	$filter = array();
+	if(isset($_POST["theme_search"]) && $_POST["theme_search"] != ""){
 		array_push($filter,  " term_id = ".$_POST["theme_search"]);
 	}
-	if(isset ($_POST["title_search"]) && $_POST["title_search"] != null){
+	if(isset ($_POST["title_search"]) && $_POST["title_search"] != ""){
 		array_push($filter,  " post_title LIKE '%".$_POST["title_search"]."%'");
 	}
 	$fil_total = count($filter);
@@ -262,11 +262,11 @@ function get_all_themes(){
 				$child_theme= $wpdb->get_results( $qry2 );
 				if(count($child_theme)>0){
 					$valor2 =  unserialize($child_theme[0]->option_value);
-					//var_dump ($child_theme[0]->option_name);
-					$arr = array();
-					$arr["option_id"]=$child_theme[0]->option_id;
-					$arr["option_name"] =$child_theme[0]->option_name;
-					$arr["value"]=$valor2;
+					$arr = array(
+						"option_id" => $child_theme[0]->option_id,
+						"option_name" => $child_theme[0]->option_name,
+						"value" => $valor2
+					);
 					array_push($arr2, $arr);
 				}
 			}
