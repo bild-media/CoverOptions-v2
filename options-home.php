@@ -82,7 +82,7 @@ function create_admin_page(){
 						<input type="checkbox" id ="active_transmision">
 						<label for="channel">
 							FOROtv
-							<input type="radio" name="channel" value="FOROtv">
+							<input type="radio" name="channel" value="FOROtv" checked>
 						</label>
 						<label for="channel">
 							Las Estrellas

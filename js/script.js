@@ -394,7 +394,7 @@ $(function( $ ) {
         let theme = new Object();
         let item = $(elem).val();
         let id = $(elem).attr('id');
-            id = id.substr(-1);
+        id = id.substr(-1);
         let opc_name_them = $(`#option_name_${id}`).val();
         theme.order = i;
         theme.option_name = opc_name_them;
@@ -759,11 +759,13 @@ $(function( $ ) {
       let imagen_trans = $("#image-url").val();
       let active_trans = $('#active_transmision').is(':checked');
       let live_url = $("#live-url").val();
-      let channel = $("input[name=channel]").val();
+      let channel = $("input[name=channel]:checked").val();
+      console.log(channel);
       transmision.title = title_trans;
       transmision.image = imagen_trans;
       transmision.active = active_trans;
       transmision.live_url = live_url;
+      transmision.channel = channel;
       $.ajax({
         url: opc_vars.ajaxurl,
         type : "POST",
