@@ -441,8 +441,8 @@ $(function( $ ) {
 
             console.log(obj);
 
-            console.log($("#live_channel_le").val());
-            console.log($("#live_channel_digital").val());
+            $("#live_channel_le").prop('checked', JSON.parse(obj["live_channel_le"]));
+            $("#live_channel_digital").prop('checked', JSON.parse(obj["live_channel_digital"]));
 
             $("#title_trans_vivo").val(obj["title"]);
             $("#image-url").val(obj["image"]);
@@ -765,11 +765,11 @@ $(function( $ ) {
     $("#save_transmision_vivo").click(function(){
       let title_trans = $("#title_trans_vivo").val();
       let imagen_trans = $("#image-url").val();
-      let active_trans = $('#active_transmision').is(':checked');
+      let active_trans = $("#active_transmision").is(":checked");
       let live_url = $("#live-url").val();
       let channel = $("input[name=channel]:checked").val();
-      let live_channel_le = $("#live_channel_le:checked").val(); 
-      let live_channel_digital = $("#live_channel_digital:checked").val();
+      let live_channel_le = $("#live_channel_le").is(":checked"); 
+      let live_channel_digital = $("#live_channel_digital").is(":checked");
 
       console.log(`${live_channel_le} - ${live_channel_digital}`);
 

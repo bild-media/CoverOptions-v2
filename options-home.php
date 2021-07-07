@@ -39,12 +39,12 @@ function create_admin_page(){
 					<fieldset class="opch_fieldset">
 						<legend class="opch_txt_legend">Señales en vivo</legend>
 						<label for="live_channel_le">
-							<input id="live_channel_le" type="checkbox" name="live_channel_le" value="Las Estrellas">
+							<input id="live_channel_le" type="checkbox" name="live_channel_le" value="activo">
 							Activar señal en vivo Las Estrellas
 						</label>
 						<br>
 						<label for="live_channel_digital">
-							<input id="live_channel_digital" type="checkbox" name="live_channel_digital" value="digital">
+							<input id="live_channel_digital" type="checkbox" name="live_channel_digital" value="activo">
 							Activar señal en vivo Canal Digital
 						</label>
 					</fieldset>
