@@ -1,38 +1,13 @@
 <?php
 /*
-Plugin Name: Opciones del home
-Plugin URI: https://github.com/HelaGone/CoverOptions-v2
+Plugin Name: Home Options
+Plugin URI: https://github.com/bild-media/CoverOptions-v2
 Description: Este plugin permite configurar el contenido del home de cualquier tema de wordpress
 Author: Laura Ram&iacute;rez & TLJ
 Version: 2.0
 */
 
-// in the main plugin file
-add_action( 'admin_menu', 'add_plugin_page' );
-add_action( 'admin_init', 'page_init'  );
-/* Obtiene la busqueda de los temas */
-add_action('wp_ajax_get_topic','get_taxonomy_tema');
-/* Obtiene la busqueda de los temas */
-add_action('wp_ajax_get_posts','get_posts_by_tema');
-/* Guarda los temas */
-add_action('wp_ajax_save_themes','save_theme');
-/* Obtiene los temas */
-add_action('wp_ajax_get_themes','get_all_themes');
-/* Eliminar los temas */
-add_action('wp_ajax_delete_theme','delete');
-/* Cambia el orden de los temas */
-add_action('wp_ajax_change_order','chenge_order_themes');
-/* Guardar transmision en vivo */
-add_action('wp_ajax_save_trans_vivo','save_transmision_vivo');
-/* Obtiene transmision en vivo */
-add_action('wp_ajax_get_trans_vivo','get_transmision_vivo');
-/* Obtiene el feed main_theme_home */
-add_action('wp_ajax_save_main_theme_home','save_main_theme');
-add_action('wp_ajax_save_update_edit','save_edit');
-add_action('wp_ajax_get_update_edit','get_feed_editorial_update');
-
-
-/* Add options page	 */
+/* Add options page	in the main plugin file */
 function add_plugin_page(){
 	// This page will be under "Settings"
 	add_options_page(
@@ -43,6 +18,7 @@ function add_plugin_page(){
 		'create_admin_page'
 	);
 }
+add_action( 'admin_menu', 'add_plugin_page' );
 
 function create_admin_page(){
 	//add_action('admin_post_accion', 'nombre_de_la_funcion'); // Para usuarios logueados
@@ -54,94 +30,113 @@ function create_admin_page(){
 		    <li id="link_tab_2"><a href="#tabs-2">Transmisi&oacute;n en vivo</a></li>
 		    <li id="link_tab_3"><a href="#tabs-3">Selecci&oacute;n del editor</a></li>
 		  </ul>
-			<div id="tabs-1"></div>
-			<div id="tabs-2">
-  			<h1>Transmisi&oacute;n en vivo</h1>
-				<form method="post">
 
-					<div class ="opch_txt_block">
-						<div class = "opch_txt_left">T&iacute;tulo : </div>
-						<div> <input  type="text"   id="title_trans_vivo" size = "70" placeholder=" T&iacute;tulo transmisi&oacute;n en vivo" /></div>
-					</div>
-					<div class ="opch_txt_block">
-						<div class = "opch_txt_left">Imagen : </div>
-						<input id="image-url" size = "55" type="text" name="image" placeholder="Selecciona una imagen" />
-						<input id="upload-button" type="button" class="button" value="Upload Image" />
-					</div>
-					<div class="opch_txt_block" id="live_url_container" hidden>
-						<div class="opch_txt_left">
-							URL en vivo
+			<div id="tabs-1"></div>
+
+			<div id="tabs-2">
+  			<!-- <h1>Transmisiones en vivo</h1> -->
+				<form method="post">
+					<fieldset class="opch_fieldset">
+						<legend class="opch_txt_legend">Señales en vivo</legend>
+						<label for="live_channel_le">
+							<input id="live_channel_le" type="checkbox" name="live_channel_le" value="Las Estrellas">
+							Activar señal en vivo Las Estrellas
+						</label>
+						<br>
+						<label for="live_channel_digital">
+							<input id="live_channel_digital" type="checkbox" name="live_channel_digital" value="digital">
+							Activar señal en vivo Canal Digital
+						</label>
+					</fieldset>
+
+					<fieldset class="opch_fieldset">
+						<legend class="opch_txt_legend">Señal en vivo Facebook / Youtube</legend>
+						<div class="opch_txt_block">
+							<div class="opch_txt_left">T&iacute;tulo : </div>
+							<div><input type="text" id="title_trans_vivo" size="70" placeholder=" T&iacute;tulo transmisi&oacute;n en vivo" /></div>
 						</div>
-						<div>
-							<input id="live-url" type="text" name="live_url" size="70" placeholder="https://www.youtube.com/watch?v=rlDrH4VLeyU"> <br/>
-							<label id="live_url_field" for="live_url"><em>Llenar solo en caso de tratarse de Youtube o Facebook</em></label>
+						<div class="opch_txt_block">
+							<div class="opch_txt_left">Imagen : </div>
+							<input id="image-url" size="55" type="text" name="image" placeholder="Selecciona una imagen" />
+							<input id="upload-button" type="button" class="button" value="Upload Image" />
 						</div>
-					</div>
-					<div class = "opch_txt_block">
-						<div class = "opch_txt_left"> Activar  </div>
-						<input type="checkbox" id ="active_transmision">
-						<label for="channel">
-							FOROtv
-							<input type="radio" name="channel" value="FOROtv" checked>
-						</label>
-						<label for="channel">
-							Las Estrellas
-							<input type="radio" name="channel" value="Las Estrellas">
-						</label>
-						<label for="channel">
-							Youtube
-							<input type="radio" name="channel" value="Youtube">
-						</label>
-						<label for="channel">
-							Facebook
-							<input type="radio" name="channel" value="Facebook">
-						</label>
-					</div>
-					<div class ="opch_save">
-						  <input class ="button button-primary button-large" id="save_transmision_vivo" type="button" value="Guardar" />
+						<div class="opch_txt_block" id="live_url_container" hidden>
+							<div class="opch_txt_left">
+								URL en vivo
+							</div>
+							<div>
+								<input id="live-url" type="text" name="live_url" size="70" placeholder="https://www.youtube.com/watch?v=rlDrH4VLeyU"> <br/>
+								<label id="live_url_field" for="live_url"><em>Llenar solo en caso de tratarse de Youtube o Facebook</em></label>
+							</div>
+						</div>
+						<div class="opch_txt_block">
+							<div class="opch_txt_left"> Activar  </div>
+							<input type="checkbox" id ="active_transmision">
+							<!-- <label for="channel">
+								FOROtv
+								<input type="radio" name="channel" value="FOROtv" checked>
+							</label>
+							<label for="channel">
+								Las Estrellas
+								<input type="radio" name="channel" value="Las Estrellas">
+							</label> -->
+							<label for="channel">
+								Youtube
+								<input type="radio" name="channel" value="Youtube">
+							</label>
+							<label for="channel">
+								Facebook
+								<input type="radio" name="channel" value="Facebook">
+							</label>
+						</div>
+					</fieldset>
+					<div class="opch_save">
+						  <input class="button button-primary button-large" id="save_transmision_vivo" type="button" value="Guardar" />
 					</div>
 				</form>
 			</div>
+
 			<div id="tabs-3">
   			<h1>Selecci&oacute;n del editor</h1>
-  			<div class ="opch_txt_block">
-  				<div class = "opch_txt_left"> Resumen : </div>
+  			<div class="opch_txt_block">
+  				<div class="opch_txt_left"> Resumen : </div>
   				<div>
 						<textarea name="textarea" id="summary_edit" rows="10" cols="69"  placeholder="Escribe el resumen aqu&iacute;"></textarea>
 					</div>
  				</div>
-  			<div class ="opch_txt_block">
-					<div class = "opch_txt_left">Nota 1 : </div>
+  			<div class="opch_txt_block">
+					<div class="opch_txt_left">Nota 1 : </div>
 					<div>
-						<input type = "text" name = "note_edit_update" size = "70" id = "name_note_edit_0" placeholder="Buscar nota 1">
+						<input type ="text" name ="note_edit_update" size="70" id ="name_note_edit_0" placeholder="Buscar nota 1">
 						<input type ="hidden" id ="id_note_edit_0" >
           </div>
           <div class="resultado_temas_cont" id="res_note_edit_0"></div>
 				</div>
-				<div class ="opch_txt_block">
-					<div class = "opch_txt_left">Nota 2 : </div>
+				<div class="opch_txt_block">
+					<div class="opch_txt_left">Nota 2 : </div>
           <div>
-						<input type = "text" name = "note_edit_update" size = "70" id = "name_note_edit_1" placeholder="Buscar nota 2">
+						<input type ="text" name ="note_edit_update" size="70" id ="name_note_edit_1" placeholder="Buscar nota 2">
 						<input type ="hidden" id ="id_note_edit_1" >
           </div>
           <div class="resultado_temas_cont" id="res_note_edit_1"></div>
 				</div>
-				<div class ="opch_txt_block">
-          <div class = "opch_txt_left">Nota 3 : </div>
+				<div class="opch_txt_block">
+          <div class="opch_txt_left">Nota 3 : </div>
           <div>
-            <input type = "text" name = "note_edit_update" size = "70" id = "name_note_edit_2" placeholder="Buscar nota 3">
+            <input type ="text" name ="note_edit_update" size="70" id ="name_note_edit_2" placeholder="Buscar nota 3">
             <input type ="hidden" id ="id_note_edit_2" >
           </div>
           <div class="resultado_temas_cont" id="res_note_edit_2"></div>
 				</div>
-				<div class = "opch_txt_block">
-					<div class = "opch_txt_left"> Activar  </div>
+				<div class="opch_txt_block">
+					<div class="opch_txt_left"> Activar  </div>
 					<input type="checkbox" id ="active_edit_update">  &nbsp;
 				</div>
-				<div class ="opch_save">
-	  			<input class ="button button-primary button-large" id ="save_update_edit" type="button" value="Guardar" />
+				<div class="opch_save">
+	  			<input class="button button-primary button-large" id ="save_update_edit" type="button" value="Guardar" />
 				</div>
 			</div>
+
 		</div>
 	</div>
 	<?php
@@ -163,10 +158,12 @@ function page_init(){
 		wp_enqueue_style('opc_style_2');
 	}
 }
+add_action( 'admin_init', 'page_init'  );
 
-function get_taxonomy_tema(){
+/* Obtiene la busqueda de los temas */
+function get_taxonomy_category(){
 	global  $wpdb;
-	$arr = array();
+	$arr =array();
 	$str = $_POST["theme_search"];
 	$filter ="";
 	if($str != ""){
@@ -175,7 +172,7 @@ function get_taxonomy_tema(){
 	$qry = "SELECT t.name, t.term_id, term_taxonomy_id
 		FROM wp_term_taxonomy tt
 		INNER JOIN wp_terms t using (term_id)
-		WHERE taxonomy = 'TEMA'".$filter." ORDER BY term_taxonomy_id LIMIT 0, 20 ;";
+		WHERE taxonomy = 'category'".$filter." ORDER BY term_taxonomy_id LIMIT 0, 20 ;";
 	$temas = $wpdb->get_results( $qry );
 	$n=0;
 	foreach( $temas as $row ) {
@@ -189,7 +186,9 @@ function get_taxonomy_tema(){
 	echo $json;
 	wp_die();
 }
+add_action('wp_ajax_get_topic','get_taxonomy_category');
 
+/* Obtiene la busqueda de los temas */
 function get_posts_by_tema(){
 	global  $wpdb;
 	$arr = array();
@@ -238,14 +237,18 @@ function get_posts_by_tema(){
 	echo $json;
 	wp_die();
 }
+add_action('wp_ajax_get_posts','get_posts_by_tema');
 
+/* Guarda los temas */
 function save_theme(){
 	$opc = $_POST["tema"];
 	$val = $_POST["datos"];
 	update_option($opc , $val  , "no" );
 	wp_die();
 }
+add_action('wp_ajax_save_themes','save_theme');
 
+/* Obtiene los temas */
 function get_all_themes(){
 	global  $wpdb;
 	$arr2 = array();
@@ -276,14 +279,18 @@ function get_all_themes(){
 	echo $json;
 	wp_die();
 }
+add_action('wp_ajax_get_themes','get_all_themes');
 
+/* Eliminar los temas */
 function delete(){
 	$theme = $_POST["theme_name"];
 	$delete = delete_option($theme);
 	echo $delete;
 	wp_die();
 }
+add_action('wp_ajax_delete_theme','delete');
 
+/* Cambia el orden de los temas */
 function chenge_order_themes(){
 	$datos = $_POST["datos"];
 	foreach ($datos as $clave => $fila) {
@@ -295,20 +302,25 @@ function chenge_order_themes(){
 	update_option("main_home_theme",$datos  , "no" );
 	wp_die();
 }
+add_action('wp_ajax_change_order','chenge_order_themes');
 
+/* Obtiene el feed main_theme_home */
 function save_main_theme(){
 	$datos = $_POST["datos"];
 	$update =update_option("main_home_theme",$datos  , "no" );
 	echo $update ;
 	wp_die();
 }
+add_action('wp_ajax_save_main_theme_home','save_main_theme');
 
+/* Guardar transmision en vivo */
 function save_transmision_vivo(){
 	$datos = $_POST["datos"];
 	$update = update_option("home_live_broadcast", $datos, "no");
 	echo $update;
 	wp_die();
 }
+add_action('wp_ajax_save_trans_vivo','save_transmision_vivo');
 
 function get_transmision_vivo(){
 	global  $wpdb;
@@ -316,13 +328,15 @@ function get_transmision_vivo(){
 	$res = $wpdb->get_results($sql);
 	if(count($res)>0){
 		$value = unserialize($res[0]->option_value);
-		$json = json_encode($value );
+		$json = json_encode($value);
 		echo $json;
 	}else {
 		echo '';
 	}
 	wp_die();
 }
+/* Obtiene transmision en vivo */
+add_action('wp_ajax_get_trans_vivo','get_transmision_vivo');
 
 function save_edit(){
 	$datos = $_POST["datos"];
@@ -330,6 +344,7 @@ function save_edit(){
 	echo $update ;
 	wp_die();
 }
+add_action('wp_ajax_save_update_edit','save_edit');
 
 function get_feed_editorial_update(){
 	$res = get_option("home_editorial_update");
@@ -339,5 +354,6 @@ function get_feed_editorial_update(){
 	}else echo "";
 	wp_die();
 }
+add_action('wp_ajax_get_update_edit','get_feed_editorial_update');
 
 ?>

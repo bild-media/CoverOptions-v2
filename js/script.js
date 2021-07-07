@@ -1,8 +1,8 @@
 const $ = jQuery.noConflict();
 $(function( $ ) {
-   var n = 1;
-   var activeTab =0;
-   function form_default (ext =""){
+  var n = 1;
+  var activeTab =0;
+  function form_default (ext =""){
      let fm = `
      <div class ="opch_wrap" id="theme_content_${n}">
       <div class ="opch_txt_block">
@@ -89,10 +89,10 @@ $(function( $ ) {
           &nbsp  &nbsp  &nbsp  &nbsp
           <input type ="button"  name ="btn_delete_themes" id ="delete_theme_${n}" class="button tagadd" value ="Eliminar">
        </div>
-  </div>`;
-  n++;
-  return fm;
-}
+    </div>`;
+    n++;
+    return fm;
+  }
 
     /* Agrega nuevo tema vacio */
     $(document).on("click","#add_theme",function(e){
@@ -169,6 +169,8 @@ $(function( $ ) {
      }
 
      /* Obtiene los posts */
+    
+
     function get_posts(m){
       $("#res_nmn_"+m).html("");
       let tema_id = ($("#tema_id_"+m).val() == "") ? null : $("#tema_id_"+m).val();
@@ -384,7 +386,6 @@ $(function( $ ) {
                }
         });
         await btn_generales_tab1();
-
     }
 
     function updateMainTheme(){
@@ -432,14 +433,21 @@ $(function( $ ) {
         url: opc_vars.ajaxurl,
         type : "POST",
         data : {
-        action : 'get_trans_vivo',
+          action : 'get_trans_vivo',
         },
         success : function (res){
           if(res != ""){
             let obj = JSON.parse(res);
+
+            console.log(obj);
+
+            console.log($("#live_channel_le").val());
+            console.log($("#live_channel_digital").val());
+
             $("#title_trans_vivo").val(obj["title"]);
             $("#image-url").val(obj["image"]);
             $("#active_transmision").prop('checked', JSON.parse(obj["active"]));
+
             $.each($("input[name=channel]"), function(i, v){
               if($(v).val() == obj["channel"]){
                 $(v).prop("checked", "true");
@@ -760,12 +768,19 @@ $(function( $ ) {
       let active_trans = $('#active_transmision').is(':checked');
       let live_url = $("#live-url").val();
       let channel = $("input[name=channel]:checked").val();
-      console.log(channel);
+      let live_channel_le = $("#live_channel_le:checked").val(); 
+      let live_channel_digital = $("#live_channel_digital:checked").val();
+
+      console.log(`${live_channel_le} - ${live_channel_digital}`);
+
+      // console.log(channel);
       transmision.title = title_trans;
       transmision.image = imagen_trans;
       transmision.active = active_trans;
       transmision.live_url = live_url;
       transmision.channel = channel;
+      transmision.live_channel_le = live_channel_le;
+      transmision.live_channel_digital = live_channel_digital;
       $.ajax({
         url: opc_vars.ajaxurl,
         type : "POST",
