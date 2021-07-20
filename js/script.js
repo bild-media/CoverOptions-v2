@@ -408,6 +408,9 @@ $(function( $ ) {
         data: {
           action : 'save_main_theme_home',
           datos : arrayTheme
+        },
+        beforeSend: function(xhr){
+          xhr.setRequestHeader("Authorization", "Basic "+btoa("hluna@televisa.news"+":"+"helagone:dev_01") )
         }
       }).success(function(result){
         //console.log(result);
